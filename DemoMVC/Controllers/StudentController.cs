@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DemoMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace DemoMVC.Controllers
 {
@@ -18,6 +19,7 @@ namespace DemoMVC.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             ViewData["Title"] = "Data form Index action method of StudentController";
@@ -31,8 +33,12 @@ namespace DemoMVC.Controllers
             //fName = "Xin chào " + fName.ToUpper() + "!";
             //ViewData["FullName"] = fName;
             //var data = $"Họ và tên: ";
+            ViewData["TheStudent"] = std;
+            ViewBag["TheStudent"] = std;
+            TempData["TheStudent"] = JsonSerializer.Serialize(std);
 
-            return View();
+
+            return View(std);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,3 +1,6 @@
+@model DemoMVC.Models.Student
+@using System.Text.Json
+
 <h1>
     View Index SdudentController
 </h1>
@@ -15,6 +18,33 @@
     <input type="submit" value="Gửi dữ liệu" />
 </form>
 
-<h2>
-    @ViewData["FullName"]
-</h2>
+
+@if (Model != null)
+{
+    <span>Name: @Model.FullName</span> <br />
+    <span>Address: @Model.Address</span> <br />
+    <span>School: @Model.University</span> <br />
+}
+
+@if (ViewBag.TheStudent != null)
+{
+    <h3>Dữ liệu từ ViewBag/ViewData:</h3>
+    Student st = (Student)ViewBag.TheStudent;
+    <span>Name: @st.FullName</span> <br />
+    <span>Address: @st.Address</span> <br />
+    <span>School: @st.University</span> <br />
+}
+
+@if (TempData["TheStudent"] != null)
+{
+    <h3>Dữ liệu từ TempData:</h3>
+    string jsonString = TempData["TheStudent"].ToString();
+    Student st = JsonSerializer.Deserialize<Student>(jsonString);
+    <span>Name: @st.FullName</span> <br />
+    <span>Address: @st.Address</span> <br />
+    <span>School: @st.University</span> <br />
+}
+
+@* <h2>
+    @ViewData["fullName"]
+</h2> *@
