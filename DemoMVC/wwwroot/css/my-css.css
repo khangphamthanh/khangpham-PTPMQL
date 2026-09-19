@@ -28,7 +28,6 @@
     font-family: 'Consolas', 'Courier New', monospace;
 }
 
-/* Custom style trang trí cho trang Routing */
 .hero-banner-routing {
     background: linear-gradient(135deg, #0d6efd 0%, #0a2540 100%);
     color: white;
@@ -58,7 +57,6 @@
     border-left: 4px solid #0d6efd;
 }
 
-/* Custom style trang trí cho trang Data Transfer */
 .hero-banner-data {
     background: linear-gradient(135deg, #0d9488 0%, #0f172a 100%);
     color: white;
@@ -87,7 +85,7 @@
     background-color: #f0fdf4;
     border-left: 4px solid #10b981;
 }
-/* Custom style cho trang State Management */
+
 .hero-banner-state {
     background: linear-gradient(135deg, #6f42c1 0%, #1e1035 100%);
     color: white;
@@ -116,7 +114,7 @@
     background-color: #f8f5ff;
     border-left: 4px solid #6f42c1;
 }
-/* Custom styles cho bài hướng dẫn Bootstrap 5 */
+
 .hero-banner-bs5 {
     background: linear-gradient(135deg, #7952b3 0%, #2b1154 100%);
     color: white;
