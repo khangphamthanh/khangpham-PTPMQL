@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260917075215_Create_table_Student")]
-    partial class Create_table_Student
+    [Migration("20260924074711_update_table")]
+    partial class update_table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,19 +26,19 @@ namespace DemoMVC.Migrations
 
             modelBuilder.Entity("DemoMVC.Models.Student", b =>
                 {
-                    b.Property<int>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("University")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StudentId");

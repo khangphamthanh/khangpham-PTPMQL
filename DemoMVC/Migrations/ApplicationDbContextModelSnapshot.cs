@@ -23,19 +23,19 @@ namespace DemoMVC.Migrations
 
             modelBuilder.Entity("DemoMVC.Models.Student", b =>
                 {
-                    b.Property<int>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("University")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StudentId");

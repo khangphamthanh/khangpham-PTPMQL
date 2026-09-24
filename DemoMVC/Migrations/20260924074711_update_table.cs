@@ -5,7 +5,7 @@
 namespace DemoMVC.Migrations
 {
     /// <inheritdoc />
-    public partial class Create_table_Student : Migration
+    public partial class update_table : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,11 +14,10 @@ namespace DemoMVC.Migrations
                 name: "Students",
                 columns: table => new
                 {
-                    StudentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    University = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    University = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
