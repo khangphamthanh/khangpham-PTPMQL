@@ -1,0 +1,14 @@
+@model DemoMVC.Models.Discipline
+
+<form asp-action="Edit" asp-route-id="@Model.DisciplineId" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="DisciplineId" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="DisciplineName" class="form-label"></label>
+        <input asp-for="DisciplineName" class="form-control" />
+        <span asp-validation-for="DisciplineName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+</form>

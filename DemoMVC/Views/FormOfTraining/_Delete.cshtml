@@ -1,0 +1,11 @@
+@model DemoMVC.Models.FormOfTraining
+
+<div>
+    <p>Bạn có chắc muốn xóa hệ đào tạo <strong>@Model.FormName</strong> không?</p>
+    <form asp-action="DeleteConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="FormId" type="hidden" />
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+    </form>
+</div>

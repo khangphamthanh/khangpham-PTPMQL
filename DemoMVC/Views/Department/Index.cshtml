@@ -1,0 +1,172 @@
+@model IEnumerable<DemoMVC.Models.Department>
+
+@{
+    ViewData["Title"] = "Danh sách khoa";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Danh sách khoa</h2>
+    <button type="button" class="btn btn-primary" data-department-action="create">
+        Tạo mới
+    </button>
+</div>
+
+<div class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input type="search" id="departmentSearchInput" class="form-control"
+               placeholder="Tìm theo tên khoa..."
+               value="@ViewBag.SearchString"
+               aria-label="Tìm kiếm khoa" />
+    </div>
+    <div class="col-auto">
+        <button type="button" id="departmentSearchButton" class="btn btn-outline-primary">
+            Tìm kiếm
+        </button>
+    </div>
+</div>
+
+<div id="departmentTableContainer">
+    @await Html.PartialAsync("_DepartmentTable", Model)
+</div>
+
+<div class="modal fade" id="departmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="departmentModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body" id="departmentModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="departmentToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function ($) {
+            const modalElement = document.getElementById("departmentModal");
+            const departmentModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            let currentSearch = $("#departmentSearchInput").val().trim();
+            let currentPage = @(ViewBag.CurrentPage ?? 1);
+
+            function showToast(message, type) {
+                const toast = $("#departmentToast");
+                toast.removeClass("text-bg-success text-bg-danger text-bg-warning")
+                    .addClass("text-bg-" + (type || "success"));
+                toast.find(".toast-body").text(message);
+                bootstrap.Toast.getOrCreateInstance(toast[0]).show();
+            }
+
+            function loadDepartmentTable(page = 1, searchString = "") {
+                currentPage = page;
+                currentSearch = searchString;
+
+                return $.get("@Url.Action("Table", "Department")", {
+                    page: page,
+                    pageSize: 5,
+                    searchString: searchString
+                })
+                    .done(function (html) {
+                        $("#departmentTableContainer").html(html);
+                    })
+                    .fail(function () {
+                        showToast("Không thể tải lại danh sách khoa.", "danger");
+                    });
+            }
+
+            function showModal(title, url) {
+                $("#departmentModalTitle").text(title);
+                $("#departmentModalBody").html(
+                    '<div class="text-center p-3"><div class="spinner-border" role="status" aria-label="Đang tải"></div></div>');
+                departmentModal.show();
+
+                $.get(url)
+                    .done(function (html) {
+                        $("#departmentModalBody").html(html);
+                    })
+                    .fail(function (xhr) {
+                        departmentModal.hide();
+                        showToast(xhr.responseJSON?.message || "Không thể tải biểu mẫu.", "danger");
+                    });
+            }
+
+            function submitDepartmentForm(form) {
+                const submitButton = form.find(":submit");
+                submitButton.prop("disabled", true);
+
+                $.ajax({
+                    url: form.attr("action"),
+                    type: "POST",
+                    data: form.serialize(),
+                    headers: {
+                        "RequestVerificationToken":
+                            form.find("input[name='__RequestVerificationToken']").val()
+                    }
+                })
+                    .done(function (result) {
+                        departmentModal.hide();
+                        showToast(result.message, "success");
+                        loadDepartmentTable(1, currentSearch);
+                    })
+                    .fail(function (xhr) {
+                        if (xhr.status === 400 && xhr.responseText) {
+                            $("#departmentModalBody").html(xhr.responseText);
+                            return;
+                        }
+
+                        showToast(xhr.responseJSON?.message || "Không thể xử lý yêu cầu.", "danger");
+                    })
+                    .always(function () {
+                        submitButton.prop("disabled", false);
+                    });
+            }
+
+            $(document).on("click", "[data-department-action='create']", function () {
+                showModal("Tạo khoa", "@Url.Action("Create", "Department")");
+            });
+
+            $(document).on("click", "[data-department-action='edit']", function () {
+                const id = encodeURIComponent($(this).data("id"));
+                showModal("Sửa khoa", "@Url.Action("Edit", "Department")?id=" + id);
+            });
+
+            $(document).on("click", "[data-department-action='delete']", function () {
+                const id = encodeURIComponent($(this).data("id"));
+                showModal("Xóa khoa", "@Url.Action("Delete", "Department")?id=" + id);
+            });
+
+            $("#departmentSearchButton").on("click", function () {
+                loadDepartmentTable(1, $("#departmentSearchInput").val().trim());
+            });
+
+            $("#departmentSearchInput").on("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    loadDepartmentTable(1, $(this).val().trim());
+                }
+            });
+
+            $(document).on("click", "[data-department-page]", function () {
+                if ($(this).closest(".page-item").hasClass("disabled")) {
+                    return;
+                }
+
+                const page = Number($(this).data("department-page"));
+                if (page > 0) {
+                    loadDepartmentTable(page, currentSearch);
+                }
+            });
+
+            $(document).on("submit", "#departmentModalBody form", function (event) {
+                event.preventDefault();
+                submitDepartmentForm($(this));
+            });
+        })(jQuery);
+    </script>
+}

@@ -21,6 +21,48 @@ namespace DemoMVC.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DemoMVC.Models.Department", b =>
+                {
+                    b.Property<string>("DepartmentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DepartmentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DepartmentId");
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.Discipline", b =>
+                {
+                    b.Property<string>("DisciplineId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DisciplineName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DisciplineId");
+
+                    b.ToTable("Disciplines");
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.FormOfTraining", b =>
+                {
+                    b.Property<string>("FormId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FormName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FormId");
+
+                    b.ToTable("FormOfTrainings");
+                });
+
             modelBuilder.Entity("DemoMVC.Models.Student", b =>
                 {
                     b.Property<string>("StudentId")
@@ -29,6 +71,21 @@ namespace DemoMVC.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DepartmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DisciplineId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("EntryYear")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FormId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -40,7 +97,55 @@ namespace DemoMVC.Migrations
 
                     b.HasKey("StudentId");
 
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DisciplineId");
+
+                    b.HasIndex("FormId");
+
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.Student", b =>
+                {
+                    b.HasOne("DemoMVC.Models.Department", "Department")
+                        .WithMany("Students")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DemoMVC.Models.Discipline", "Discipline")
+                        .WithMany("Students")
+                        .HasForeignKey("DisciplineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DemoMVC.Models.FormOfTraining", "FormOfTraining")
+                        .WithMany("Students")
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Discipline");
+
+                    b.Navigation("FormOfTraining");
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.Department", b =>
+                {
+                    b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.Discipline", b =>
+                {
+                    b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.FormOfTraining", b =>
+                {
+                    b.Navigation("Students");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,18 @@
+@model DemoMVC.Models.Discipline
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="DisciplineId" class="form-label"></label>
+        <input asp-for="DisciplineId" class="form-control" />
+        <span asp-validation-for="DisciplineId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DisciplineName" class="form-label"></label>
+        <input asp-for="DisciplineName" class="form-control" />
+        <span asp-validation-for="DisciplineName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo mới</button>
+</form>

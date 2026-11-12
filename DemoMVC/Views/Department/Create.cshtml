@@ -1,0 +1,14 @@
+@model DemoMVC.Models.Department
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+@await Html.PartialAsync("_Create", Model)
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

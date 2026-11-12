@@ -1,0 +1,11 @@
+@model DemoMVC.Models.Discipline
+
+<div>
+    <p>Bạn có chắc muốn xóa ngành <strong>@Model.DisciplineName</strong> không?</p>
+    <form asp-action="DeleteConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="DisciplineId" type="hidden" />
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+    </form>
+</div>

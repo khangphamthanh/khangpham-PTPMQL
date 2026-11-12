@@ -1,0 +1,11 @@
+@model DemoMVC.Models.Student
+
+<div>
+    <p>Bạn có chắc muốn xóa sinh viên <strong>@Model.FullName</strong> (@Model.StudentId) không?</p>
+    <form asp-action="DeleteConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="StudentId" type="hidden" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </form>
+</div>

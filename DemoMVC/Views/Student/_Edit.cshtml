@@ -1,0 +1,50 @@
+@model DemoMVC.Models.Student
+
+<form asp-action="Edit" asp-route-id="@Model.StudentId" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="StudentId" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="University" class="form-label"></label>
+        <input asp-for="University" class="form-control" />
+        <span asp-validation-for="University" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EntryYear" class="form-label"></label>
+        <input asp-for="EntryYear" class="form-control" />
+        <span asp-validation-for="EntryYear" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DepartmentId" class="form-label"></label>
+        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select">
+            <option value="">-- Select department --</option>
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DisciplineId" class="form-label"></label>
+        <select asp-for="DisciplineId" asp-items="ViewBag.Disciplines" class="form-select">
+            <option value="">-- Select discipline --</option>
+        </select>
+        <span asp-validation-for="DisciplineId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="FormId" class="form-label"></label>
+        <select asp-for="FormId" asp-items="ViewBag.FormOfTraining" class="form-select">
+            <option value="">-- Select form of training --</option>
+        </select>
+        <span asp-validation-for="FormId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

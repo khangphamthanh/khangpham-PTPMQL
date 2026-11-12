@@ -1,0 +1,172 @@
+@model IEnumerable<DemoMVC.Models.FormOfTraining>
+
+@{
+    ViewData["Title"] = "Danh sách hệ đào tạo";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Danh sách hệ đào tạo</h2>
+    <button type="button" class="btn btn-primary" data-form-action="create">
+        Tạo mới
+    </button>
+</div>
+
+<div class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input type="search" id="formSearchInput" class="form-control"
+               placeholder="Tìm theo tên hệ đào tạo..."
+               value="@ViewBag.SearchString"
+               aria-label="Tìm kiếm hệ đào tạo" />
+    </div>
+    <div class="col-auto">
+        <button type="button" id="formSearchButton" class="btn btn-outline-primary">
+            Tìm kiếm
+        </button>
+    </div>
+</div>
+
+<div id="formTableContainer">
+    @await Html.PartialAsync("_FormOfTrainingTable", Model)
+</div>
+
+<div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body" id="formModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="formToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function ($) {
+            const modalElement = document.getElementById("formModal");
+            const formModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            let currentSearch = $("#formSearchInput").val().trim();
+            let currentPage = @(ViewBag.CurrentPage ?? 1);
+
+            function showToast(message, type) {
+                const toast = $("#formToast");
+                toast.removeClass("text-bg-success text-bg-danger text-bg-warning")
+                    .addClass("text-bg-" + (type || "success"));
+                toast.find(".toast-body").text(message);
+                bootstrap.Toast.getOrCreateInstance(toast[0]).show();
+            }
+
+            function loadFormOfTrainingTable(page = 1, searchString = "") {
+                currentPage = page;
+                currentSearch = searchString;
+
+                return $.get("@Url.Action("Table", "FormOfTraining")", {
+                    page: page,
+                    pageSize: 5,
+                    searchString: searchString
+                })
+                    .done(function (html) {
+                        $("#formTableContainer").html(html);
+                    })
+                    .fail(function () {
+                        showToast("Không thể tải lại danh sách hệ đào tạo.", "danger");
+                    });
+            }
+
+            function showModal(title, url) {
+                $("#formModalTitle").text(title);
+                $("#formModalBody").html(
+                    '<div class="text-center p-3"><div class="spinner-border" role="status" aria-label="Đang tải"></div></div>');
+                formModal.show();
+
+                $.get(url)
+                    .done(function (html) {
+                        $("#formModalBody").html(html);
+                    })
+                    .fail(function (xhr) {
+                        formModal.hide();
+                        showToast(xhr.responseJSON?.message || "Không thể tải biểu mẫu.", "danger");
+                    });
+            }
+
+            function submitFormOfTrainingForm(form) {
+                const submitButton = form.find(":submit");
+                submitButton.prop("disabled", true);
+
+                $.ajax({
+                    url: form.attr("action"),
+                    type: "POST",
+                    data: form.serialize(),
+                    headers: {
+                        "RequestVerificationToken":
+                            form.find("input[name='__RequestVerificationToken']").val()
+                    }
+                })
+                    .done(function (result) {
+                        formModal.hide();
+                        showToast(result.message, "success");
+                        loadFormOfTrainingTable(1, currentSearch);
+                    })
+                    .fail(function (xhr) {
+                        if (xhr.status === 400 && xhr.responseText) {
+                            $("#formModalBody").html(xhr.responseText);
+                            return;
+                        }
+
+                        showToast(xhr.responseJSON?.message || "Không thể xử lý yêu cầu.", "danger");
+                    })
+                    .always(function () {
+                        submitButton.prop("disabled", false);
+                    });
+            }
+
+            $(document).on("click", "[data-form-action='create']", function () {
+                showModal("Tạo hệ đào tạo", "@Url.Action("Create", "FormOfTraining")");
+            });
+
+            $(document).on("click", "[data-form-action='edit']", function () {
+                const id = encodeURIComponent($(this).data("id"));
+                showModal("Sửa hệ đào tạo", "@Url.Action("Edit", "FormOfTraining")?id=" + id);
+            });
+
+            $(document).on("click", "[data-form-action='delete']", function () {
+                const id = encodeURIComponent($(this).data("id"));
+                showModal("Xóa hệ đào tạo", "@Url.Action("Delete", "FormOfTraining")?id=" + id);
+            });
+
+            $("#formSearchButton").on("click", function () {
+                loadFormOfTrainingTable(1, $("#formSearchInput").val().trim());
+            });
+
+            $("#formSearchInput").on("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    loadFormOfTrainingTable(1, $(this).val().trim());
+                }
+            });
+
+            $(document).on("click", "[data-form-page]", function () {
+                if ($(this).closest(".page-item").hasClass("disabled")) {
+                    return;
+                }
+
+                const page = Number($(this).data("form-page"));
+                if (page > 0) {
+                    loadFormOfTrainingTable(page, currentSearch);
+                }
+            });
+
+            $(document).on("submit", "#formModalBody form", function (event) {
+                event.preventDefault();
+                submitFormOfTrainingForm($(this));
+            });
+        })(jQuery);
+    </script>
+}

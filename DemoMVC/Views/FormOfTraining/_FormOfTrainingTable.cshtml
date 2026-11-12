@@ -1,0 +1,78 @@
+@model IEnumerable<DemoMVC.Models.FormOfTraining>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Mã hệ</th>
+            <th>Tên hệ đào tạo</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FormId</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.FormId">
+                            @item.FormName
+                        </a>
+                    </td>
+                    <td class="text-nowrap">
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                data-form-action="edit" data-id="@item.FormId">
+                            Sửa
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                data-form-action="delete" data-id="@item.FormId">
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">Không có dữ liệu phù hợp.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center">
+    <small class="text-muted">
+        Tổng số: @ViewBag.TotalRecords hệ đào tạo
+    </small>
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav aria-label="Form of training pagination">
+            <ul class="pagination mb-0">
+                <li class="page-item @(ViewBag.CurrentPage <= 1 ? "disabled" : "")">
+                    <button type="button" class="page-link"
+                            data-form-page="@(ViewBag.CurrentPage - 1)"
+                            aria-label="Previous">«</button>
+                </li>
+
+                @for (var pageNumber = 1; pageNumber <= ViewBag.TotalPages; pageNumber++)
+                {
+                    <li class="page-item @(pageNumber == ViewBag.CurrentPage ? "active" : "")">
+                        <button type="button" class="page-link"
+                                data-form-page="@pageNumber">
+                            @pageNumber
+                        </button>
+                    </li>
+                }
+
+                <li class="page-item @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")">
+                    <button type="button" class="page-link"
+                            data-form-page="@(ViewBag.CurrentPage + 1)"
+                            aria-label="Next">»</button>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
